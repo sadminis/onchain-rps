@@ -58,4 +58,24 @@ contract RockPaperScissorsTest is Test {
         assertEq(uint256(inGamePlayer2Move), uint256(player2Move));
         assertEq(uint256(inGameState), uint256(RockPaperScissors.State.Committed));
     }
+
+    function testWholeGame() public {
+        RockPaperScissors.Move player1Move = RockPaperScissors.Move.Rock;
+        RockPaperScissors.Move player2Move = RockPaperScissors.Move.Paper;
+
+        bytes32 salt = keccak256("secret");
+        bytes32 commitment = rps.createCommitment(player1Move, salt);
+
+        // Player 1 create game
+        vm.prank(player1);
+        rps.createGame(commitment);
+
+        // Player 2 join game
+        vm.prank(player2);
+        rps.joinGame(0, player2Move);
+
+        vm.prank(player1);
+        address winner = rps.revealMoves(0, player1Move, salt);
+        assertEq(winner, player2);
+    }
 }

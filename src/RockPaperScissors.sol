@@ -40,6 +40,8 @@ contract RockPaperScissors {
     // Events
     event GameCreated(uint256 gameID, address player1);
     event MoveCommitted(uint256 gameID, address player2);
+    event Player1Revealed(uint256 gameID);
+    event GameCompleted(uint256 gameID);
 
     function createGame(bytes32 commitment) external {
         uint256 gameID = gameCounter++;
@@ -66,6 +68,48 @@ contract RockPaperScissors {
         game.state = State.Committed;
 
         emit MoveCommitted(gameId, msg.sender);
+    }
+
+    function revealMoves(uint256 gameId, Move move, bytes32 salt) external returns (address winner) {
+        Game storage game = games[gameId];
+        require(game.state == State.Committed, "Player2 not yet committed");
+        require(game.player1 == msg.sender, "Only Player1 could reveal moves");
+        require(keccak256(abi.encodePacked(move, salt)) == game.player1Commitment, "Commitment does not match");
+
+        game.player1Move = move;
+        game.state = State.Revealed;
+
+        emit Player1Revealed(gameId);
+
+        return _determineWinner(gameId);
+    }
+
+    function _determineWinner(uint256 gameId) private returns (address winner) {
+        Game storage game = games[gameId];
+
+        Move player1Move = game.player1Move;
+        Move player2Move = game.player2Move;
+
+        require(game.state == State.Revealed);
+        if (player1Move == player2Move) {
+            // No winner, tie
+            winner = address(0);
+        }
+        if (
+            (player1Move == Move.Rock && player2Move == Move.Scissors)
+                || (player1Move == Move.Scissors && player2Move == Move.Paper)
+                || (player1Move == Move.Paper && player2Move == Move.Rock)
+        ) {
+            winner = game.player1;
+        } else {
+            winner = game.player2;
+        }
+
+        emit GameCompleted(gameId);
+
+        game.state = State.Completed;
+
+        return winner;
     }
 
     // Helper function to create commitment
