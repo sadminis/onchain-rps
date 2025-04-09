@@ -30,6 +30,7 @@ contract RockPaperScissors {
 
     // Events
     event GameCreated(uint256 gameID, address player1);
+    event MoveCommitted(uint256 gameID, address player2);
 
     function createGame(bytes32 commitment) external {
         uint256 gameID = gameCounter++;
@@ -43,6 +44,19 @@ contract RockPaperScissors {
         });
 
         emit GameCreated(gameID, msg.sender);
+    }
+
+    function joinGame(uint256 gameId, Move move) external {
+        Game storage game = games[gameId];
+        require(game.state == State.Waiting, "Game not waiting");
+        require(move != Move.None, "Invalid move");
+        require(game.player1 != msg.sender, "You can't play with yourself");
+
+        game.player2 = msg.sender;
+        game.player2Move = move;
+        game.state = State.Committed;
+        
+        emit MoveCommitted(gameId, msg.sender);
     }
 
     // Helper function to create commitment
