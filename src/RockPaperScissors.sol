@@ -3,14 +3,24 @@ pragma solidity ^0.8.0;
 
 contract RockPaperScissors {
     // Declare all moves possible
-    enum Move { None, Rock, Paper, Scissors }
+    enum Move {
+        None,
+        Rock,
+        Paper,
+        Scissors
+    }
 
     // Declare all states
     // Waiting: waiting for player 2 to make a move
     // Committed: player 2 made a move
     // Revealed: player 1 reveal both moves
     // Completed: game is completed
-    enum State { Waiting, Committed, Revealed, Completed }
+    enum State {
+        Waiting,
+        Committed,
+        Revealed,
+        Completed
+    }
 
     // This is what a Game should contain:
     struct Game {
@@ -26,7 +36,6 @@ contract RockPaperScissors {
     mapping(uint256 => Game) public games;
     // GameID
     uint256 public gameCounter;
-
 
     // Events
     event GameCreated(uint256 gameID, address player1);
@@ -55,7 +64,7 @@ contract RockPaperScissors {
         game.player2 = msg.sender;
         game.player2Move = move;
         game.state = State.Committed;
-        
+
         emit MoveCommitted(gameId, msg.sender);
     }
 
