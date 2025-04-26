@@ -95,7 +95,7 @@ contract RockPaperScissors {
             // No winner, tie
             winner = address(0);
         }
-        if (
+        else if (
             (player1Move == Move.Rock && player2Move == Move.Scissors)
                 || (player1Move == Move.Scissors && player2Move == Move.Paper)
                 || (player1Move == Move.Paper && player2Move == Move.Rock)
