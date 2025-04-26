@@ -1,9 +1,8 @@
+import { BrowserProvider, Contract } from "ethers";
 import { useEffect, useState } from "react";
-import { ethers } from "ethers";
 
-const CONTRACT_ADDRESS = "0x8a3411b6e286A31aB279d5b1e26217Fe702a3c67";
+const CONTRACT_ADDRESS = "0x8a3411b6e286A31aB279d5b1e26217Fe702a3c67"; // replace this!
 const ABI = [
-  // Only include the parts of ABI you need
   "function gameCounter() view returns (uint256)",
   "function games(uint256) view returns (address player1, address player2, uint8 player1Move, uint8 player2Move, bytes32 player1Commitment, uint8 state)"
 ];
@@ -18,8 +17,8 @@ export default function ViewGames() {
         return;
       }
 
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+      const provider = new BrowserProvider(window.ethereum);
+      const contract = new Contract(CONTRACT_ADDRESS, ABI, provider);
 
       const counter = await contract.gameCounter();
       const gameList = [];

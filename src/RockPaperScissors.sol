@@ -30,6 +30,7 @@ contract RockPaperScissors {
         Move player2Move;
         bytes32 player1Commitment; // Proves that player 1 made a move and hidden from player 2
         State state;
+        address winner; 
     }
 
     // Assign a game id to each unique game
@@ -91,22 +92,23 @@ contract RockPaperScissors {
         Move player2Move = game.player2Move;
 
         require(game.state == State.Revealed);
+
         if (player1Move == player2Move) {
-            // No winner, tie
             winner = address(0);
         }
         else if (
             (player1Move == Move.Rock && player2Move == Move.Scissors)
-                || (player1Move == Move.Scissors && player2Move == Move.Paper)
-                || (player1Move == Move.Paper && player2Move == Move.Rock)
+            || (player1Move == Move.Scissors && player2Move == Move.Paper)
+            || (player1Move == Move.Paper && player2Move == Move.Rock)
         ) {
             winner = game.player1;
         } else {
             winner = game.player2;
         }
 
-        emit GameCompleted(gameId);
+        game.winner = winner; // 🆕 Store winner permanently
 
+        emit GameCompleted(gameId);
         game.state = State.Completed;
 
         return winner;
