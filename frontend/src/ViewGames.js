@@ -1,7 +1,7 @@
 import { BrowserProvider, Contract } from "ethers";
 import { useEffect, useState } from "react";
 
-const CONTRACT_ADDRESS = "0x8a3411b6e286A31aB279d5b1e26217Fe702a3c67"; // replace this!
+const CONTRACT_ADDRESS = "0x9d21332C2B1A338c80D4B961946D5508468dC7FF"; // replace this!
 const ABI = [
   "function gameCounter() view returns (uint256)",
   "function games(uint256) view returns (address player1, address player2, uint8 player1Move, uint8 player2Move, bytes32 player1Commitment, uint8 state)"

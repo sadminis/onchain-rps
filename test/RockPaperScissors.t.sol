@@ -26,7 +26,7 @@ contract RockPaperScissorsTest is Test {
         rps.createGame(commitment);
 
         // Destruct the game
-        (address player1InGame,,,, bytes32 inGameCommitment, RockPaperScissors.State state) = rps.games(0);
+        (address player1InGame,,,, bytes32 inGameCommitment, RockPaperScissors.State state,) = rps.games(0);
         assertEq(player1InGame, player1);
         assertEq(uint256(state), uint256(RockPaperScissors.State.Waiting));
         assertEq(inGameCommitment, commitment);
@@ -43,7 +43,7 @@ contract RockPaperScissorsTest is Test {
         rps.createGame(commitment);
 
         // make sure room created
-        (,,,,, RockPaperScissors.State state) = rps.games(0);
+        (,,,,, RockPaperScissors.State state,) = rps.games(0);
         assertEq(uint256(state), uint256(RockPaperScissors.State.Waiting));
 
         // player 2 joins the game
@@ -52,7 +52,7 @@ contract RockPaperScissorsTest is Test {
         vm.prank(player2);
         rps.joinGame(gameID, player2Move);
 
-        (, address inGamePlayer2,, RockPaperScissors.Move inGamePlayer2Move,, RockPaperScissors.State inGameState) =
+        (, address inGamePlayer2,, RockPaperScissors.Move inGamePlayer2Move,, RockPaperScissors.State inGameState,) =
             rps.games(0);
         assertEq(inGamePlayer2, player2);
         assertEq(uint256(inGamePlayer2Move), uint256(player2Move));

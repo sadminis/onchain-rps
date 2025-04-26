@@ -52,7 +52,8 @@ contract RockPaperScissors {
             player1Move: Move.None,
             player2Move: Move.None,
             player1Commitment: commitment,
-            state: State.Waiting
+            state: State.Waiting,
+            winner: address(0) // Initialize winner to address(0)
         });
 
         emit GameCreated(gameID, msg.sender);
@@ -62,7 +63,7 @@ contract RockPaperScissors {
         Game storage game = games[gameId];
         require(game.state == State.Waiting, "Game not waiting");
         require(move != Move.None, "Invalid move");
-        require(game.player1 != msg.sender, "You can't play with yourself");
+        // require(game.player1 != msg.sender, "You can't play with yourself");
 
         game.player2 = msg.sender;
         game.player2Move = move;

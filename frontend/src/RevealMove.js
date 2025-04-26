@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { BrowserProvider, Contract, toUtf8Bytes, zeroPadBytes } from "ethers";
 
-const CONTRACT_ADDRESS = "0x8a3411b6e286A31aB279d5b1e26217Fe702a3c67"; // replace this!
+const CONTRACT_ADDRESS = "0x9d21332C2B1A338c80D4B961946D5508468dC7FF"; // replace this!
 const ABI = [
   "function revealMoves(uint256 gameId, uint8 move, bytes32 salt) public"
 ];
