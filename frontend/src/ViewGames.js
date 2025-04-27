@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 const CONTRACT_ADDRESS = "0x9d21332C2B1A338c80D4B961946D5508468dC7FF"; // replace this!
 const ABI = [
   "function gameCounter() view returns (uint256)",
-  "function games(uint256) view returns (address player1, address player2, uint8 player1Move, uint8 player2Move, bytes32 player1Commitment, uint8 state)"
+  "function games(uint256) view returns (address player1, address player2, uint8 player1Move, uint8 player2Move, bytes32 player1Commitment, uint8 state, address winner)"
 ];
 
 export default function ViewGames() {
@@ -29,7 +29,10 @@ export default function ViewGames() {
           id: i,
           player1: game.player1,
           player2: game.player2,
-          state: parseInt(game.state)
+          player1Move: parseInt(game.player1Move),
+          player2Move: parseInt(game.player2Move),
+          state: parseInt(game.state),
+          winner: game.winner // <-- this must exist!
         });
       }
 
@@ -67,6 +70,11 @@ export default function ViewGames() {
               <p><strong>Player 1:</strong> {game.player1}</p>
               <p><strong>Player 2:</strong> {game.player2}</p>
               <p><strong>State:</strong> {formatState(game.state)}</p>
+              {game.state === 3 && (
+                <>
+                  <p><strong>Winner:</strong> {game.winner === "0x0000000000000000000000000000000000000000" ? "Tie" : game.winner}</p>
+                </>
+              )}
             </li>
           ))}
         </ul>

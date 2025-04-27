@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { BrowserProvider, Contract, toUtf8Bytes, zeroPadBytes } from "ethers";
 
-const CONTRACT_ADDRESS = "0x9d21332C2B1A338c80D4B961946D5508468dC7FF"; // replace this!
+const CONTRACT_ADDRESS = "0x9d21332C2B1A338c80D4B961946D5508468dC7FF";
 const ABI = [
   "function revealMoves(uint256 gameId, uint8 move, bytes32 salt) public"
 ];
 
 export default function RevealMove() {
   const [gameId, setGameId] = useState("");
-  const [move, setMove] = useState(1); // Rock = 1 by default
+  const [move, setMove] = useState(1);
   const [salt, setSalt] = useState("");
 
   async function handleRevealMove() {
@@ -27,7 +27,6 @@ export default function RevealMove() {
     }
 
     try {
-      // Correctly pad the salt to bytes32
       const paddedSalt = zeroPadBytes(toUtf8Bytes(salt), 32);
 
       const tx = await contract.revealMoves(Number(gameId), move, paddedSalt);

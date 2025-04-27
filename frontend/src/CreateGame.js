@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { BrowserProvider, Contract, keccak256, toUtf8Bytes } from "ethers";
+import { BrowserProvider, Contract, keccak256, concat, toUtf8Bytes, zeroPadBytes, hexlify } from "ethers";
 
-const CONTRACT_ADDRESS = "0x9d21332C2B1A338c80D4B961946D5508468dC7FF"; // replace this!
+const CONTRACT_ADDRESS = "0x9d21332C2B1A338c80D4B961946D5508468dC7FF"; // <-- Replace this!
 const ABI = [
-  "function createGame(bytes32 commitment) public",
-  "function createCommitment(uint8 move, bytes32 salt) public pure returns (bytes32)"
+  "function createGame(bytes32 commitment) public"
 ];
 
 export default function CreateGame() {
-  const [move, setMove] = useState(1); // 1 = Rock by default
+  const [move, setMove] = useState(1); // Default Rock
   const [salt, setSalt] = useState("");
 
   async function handleCreateGame() {
@@ -27,13 +26,14 @@ export default function CreateGame() {
     }
 
     try {
-      // Hash (move, salt) manually
-      const encoded = toUtf8Bytes(move.toString() + salt);
-      const commitment = keccak256(encoded);
+      // Correct packing like abi.encodePacked(move, salt)
+      const paddedSalt = zeroPadBytes(toUtf8Bytes(salt), 32);
+      const moveHex = hexlify(Uint8Array.from([move])); // ✅ Correctly hexlify move
+      const packed = concat([moveHex, paddedSalt]);
+      const commitment = keccak256(packed); // ✅ Correct keccak256 over packed data
 
       const tx = await contract.createGame(commitment);
       await tx.wait();
-
       alert("Game created successfully!");
     } catch (err) {
       console.error(err);
@@ -43,7 +43,7 @@ export default function CreateGame() {
 
   return (
     <div className="p-4 space-y-4">
-      <h2 className="text-xl font-bold mb-4">Create New Game</h2>
+      <h2 className="text-2xl font-bold mb-4">Create New Game</h2>
 
       <div>
         <label className="block mb-1">Choose your move:</label>
@@ -65,7 +65,7 @@ export default function CreateGame() {
           className="border p-2 rounded w-full"
           value={salt}
           onChange={(e) => setSalt(e.target.value)}
-          placeholder="Enter random string (secret)"
+          placeholder="Enter random secret"
         />
       </div>
 
